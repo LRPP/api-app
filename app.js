@@ -6,7 +6,10 @@ function getDataFromApi(searchTerm, callback) {
         data: {
             part: 'snippet',
             key: 'AIzaSyBcNX1xVrmVGTDyHb_ZDL9qeUV24VG6NLU',
-            q: 'searchTerm',
+            q: searchTerm,
+            maxResults: 50,
+            //order: title,
+            //type: video,
         },
         dataType: 'json',
         type: 'GET',
@@ -19,9 +22,9 @@ function getDataFromApi(searchTerm, callback) {
 
 function displayYouTubeSearchData(data) {
     var resultElement = '';
-    if (data.part) {
-        data.part.forEach(function(snippet) {
-            resultElement += '<p>' + snippet.title + '</p>';
+    if (data.items) {
+        data.items.forEach(function(item) {
+            resultElement += '<p>' + item.snippet.title + '</p><a href="https://www.youtube.com/watch?v=' + item.id.videoId + '"><img src="' + item.snippet.thumbnails.medium.url + '"></a>';
         });
     } else {
         resultElement += '<p>No results</p>';
@@ -31,8 +34,8 @@ function displayYouTubeSearchData(data) {
 }
 
 function watchSubmit() {
-    $('.js-search-form').submit(function(e) {
-        e.preventDefault();
+    $('.js-search-form').submit(function(event) {
+        event.preventDefault();
         var query = $(this).find('.js-query').val();
         getDataFromApi(query, displayYouTubeSearchData);
     });
